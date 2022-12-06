@@ -6,6 +6,7 @@ import { Model } from "~/models/Playlist.model";
 import useSpotify from "~/hooks/useSpotify.hook";
 import useList from "~/hooks/useList.hook";
 import { BarsArrowDownIcon } from "@heroicons/react/20/solid";
+import { Response as CreatedPlaylist } from "~/pages/api/playlist/[id]";
 
 import styles from "./Form.module.css";
 
@@ -24,6 +25,15 @@ export const Form: React.FC<Props> = ({}) => {
     revalidateOnFocus: false,
   });
 
+  const defaultFormFields = {
+    name: "",
+    owner: me?.display_name || "",
+    slug: "",
+    upvote: 0,
+    spotifyId: "",
+    color: DEFAULT_CARD_COLOR,
+  };
+
   const {
     register,
     setValue,
@@ -32,30 +42,39 @@ export const Form: React.FC<Props> = ({}) => {
     reset,
   } = useForm<FormData>({
     defaultValues: {
-      name: "",
-      owner: me?.display_name || "",
-      slug: "",
-      upvote: 0,
-      spotifyId: "",
-      color: DEFAULT_CARD_COLOR,
+      ...defaultFormFields,
     },
   });
 
   const [loading, setLoading] = React.useState(false);
+
   useEffect(() => {
     if (!me?.display_name) return;
     setValue("owner", me?.display_name);
   }, [me, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
-    setLoading(true);
-    mutate();
-    console.log(data);
-
-    setTimeout(() => {
+    data.slug = data.name;
+    try {
+      setLoading(true);
+      const response: Response = await fetch("/api/playlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error(`error status: ${response.status}`);
+      }
+      const result: CreatedPlaylist = await response.json();
+      reset({ ...defaultFormFields });
+      mutate();
       setLoading(false);
-      reset();
-    }, 2000);
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   return (
