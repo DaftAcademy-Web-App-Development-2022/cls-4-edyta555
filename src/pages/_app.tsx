@@ -2,6 +2,7 @@ import React from "react";
 import type { AppProps } from "next/app";
 import { PlayerProvider } from "~/contexts/player.context";
 import { NextPageWithLayout } from "~/types/common.types";
+import { SessionProvider } from "next-auth/react";
 
 import "~/styles/globals.css";
 
@@ -14,9 +15,11 @@ function MyApp({ Component, pageProps }: Props) {
 
   return (
     <>
-      <PlayerProvider>
-        {withLayout(<Component {...pageProps} />)}
-      </PlayerProvider>
+      <SessionProvider session={pageProps.session}>
+        <PlayerProvider>
+          {withLayout(<Component {...pageProps} />)}
+        </PlayerProvider>
+      </SessionProvider>
     </>
   );
 }
