@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { useForm } from "react-hook-form";
 import { DEFAULT_CARD_COLOR } from "~/config/common.config";
 import { Model } from "~/models/Playlist.model";
+import useSpotify from "~/hooks/useSpotify.hook";
 
 import { BarsArrowDownIcon } from "@heroicons/react/20/solid";
 
@@ -15,6 +16,8 @@ interface Props {
 }
 
 export const Form: React.FC<Props> = ({}) => {
+  const { me } = useSpotify();
+
   const {
     register,
     setValue,
@@ -24,7 +27,7 @@ export const Form: React.FC<Props> = ({}) => {
   } = useForm<FormData>({
     defaultValues: {
       name: "",
-      owner: "",
+      owner: me?.display_name || "",
       slug: "",
       upvote: 0,
       spotifyId: "",
@@ -33,6 +36,10 @@ export const Form: React.FC<Props> = ({}) => {
   });
 
   const [loading, setLoading] = React.useState(false);
+  useEffect(() => {
+    if (!me?.display_name) return;
+    setValue("owner", me?.display_name);
+  }, [me, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
     setLoading(true);
