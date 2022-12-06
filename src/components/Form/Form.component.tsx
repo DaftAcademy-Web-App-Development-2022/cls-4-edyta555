@@ -7,6 +7,7 @@ import useSpotify from "~/hooks/useSpotify.hook";
 import useList from "~/hooks/useList.hook";
 import { BarsArrowDownIcon } from "@heroicons/react/20/solid";
 import { Response as CreatedPlaylist } from "~/pages/api/playlist/[id]";
+import slugify from "slugify";
 
 import styles from "./Form.module.css";
 
@@ -54,7 +55,7 @@ export const Form: React.FC<Props> = ({}) => {
   }, [me, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
-    data.slug = data.name;
+    data.slug = slugify(data.name, { lower: true });
     try {
       setLoading(true);
       const response: Response = await fetch("/api/playlist", {
