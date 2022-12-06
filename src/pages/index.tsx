@@ -1,7 +1,7 @@
 import React from "react";
 
 import Head from "next/head";
-import { Layout, Container } from "~/components";
+import { Layout, Container, Loader } from "~/components";
 import type { NextPageWithLayout } from "~/types/common.types";
 import dbConnect from "~/libraries/mongoose.library";
 import { getPlaylists } from "~/libraries/api.library";
