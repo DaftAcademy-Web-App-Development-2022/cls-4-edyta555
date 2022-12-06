@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { DEFAULT_CARD_COLOR } from "~/config/common.config";
 import { Model } from "~/models/Playlist.model";
 import useSpotify from "~/hooks/useSpotify.hook";
-
+import useList from "~/hooks/useList.hook";
 import { BarsArrowDownIcon } from "@heroicons/react/20/solid";
 
 import styles from "./Form.module.css";
@@ -17,6 +17,12 @@ interface Props {
 
 export const Form: React.FC<Props> = ({}) => {
   const { me } = useSpotify();
+
+  const { mutate } = useList({
+    limit: 0,
+    revalidateOnMount: false,
+    revalidateOnFocus: false,
+  });
 
   const {
     register,
@@ -43,6 +49,7 @@ export const Form: React.FC<Props> = ({}) => {
 
   const onSubmit = handleSubmit(async (data) => {
     setLoading(true);
+    mutate();
     console.log(data);
 
     setTimeout(() => {
