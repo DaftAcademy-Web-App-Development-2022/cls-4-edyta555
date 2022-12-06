@@ -6,7 +6,7 @@ import { Model } from "~/models/Playlist.model";
 import useSpotify from "~/hooks/useSpotify.hook";
 import useList from "~/hooks/useList.hook";
 import { BarsArrowDownIcon } from "@heroicons/react/20/solid";
-import { Response as CreatedPlaylist } from "~/pages/api/playlist/[id]";
+import { Response as RefreshPlaylist } from "~/pages/api/playlist/[id]";
 import slugify from "slugify";
 
 import styles from "./Form.module.css";
@@ -69,7 +69,7 @@ export const Form: React.FC<Props> = ({}) => {
       if (!response.ok) {
         throw new Error(`error status: ${response.status}`);
       }
-      const result: CreatedPlaylist = await response.json();
+      const result: RefreshPlaylist = await response.json();
       reset({ ...defaultFormFields });
       mutate();
       setLoading(false);
