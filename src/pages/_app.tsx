@@ -5,6 +5,7 @@ import { NextPageWithLayout } from "~/types/common.types";
 import { SessionProvider } from "next-auth/react";
 
 import "~/styles/globals.css";
+import { SpotifyProvider } from "~/contexts/spotify.context";
 
 type Props = AppProps & {
   Component: NextPageWithLayout;
@@ -16,9 +17,11 @@ function MyApp({ Component, pageProps }: Props) {
   return (
     <>
       <SessionProvider session={pageProps.session}>
-        <PlayerProvider>
-          {withLayout(<Component {...pageProps} />)}
-        </PlayerProvider>
+        <SpotifyProvider>
+          <PlayerProvider>
+            {withLayout(<Component {...pageProps} />)}
+          </PlayerProvider>
+        </SpotifyProvider>
       </SessionProvider>
     </>
   );
